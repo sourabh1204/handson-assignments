@@ -36,7 +36,7 @@ class SavingsAcc {
 			System.out.println("-------------------------------------------");
 		}
 		else {
-			System.out.println("Low Balance");
+			System.out.println("Insufficient Balance");
 			System.out.println("Available Balance: "+balance+" INR");
 			System.out.println("-------------------------------------------");
 		}
