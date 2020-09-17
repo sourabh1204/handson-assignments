@@ -24,14 +24,15 @@ public class Account {
         return accountNumber;
     }
     public void withdraw(double amount) {
-        System.out.println("withdraws amount from account");
+	this.balance = this.balance - amount;
+	System.out.println("Amount debited from Acc No. : "+this.getAccountNumber());
     }
 
     /* deposit must return the balance
     */
     public void deposit(double amount) {
 	this.balance = this.balance + amount;
-	System.out.println("Amount deposited");
+	System.out.println("Amount deposited to Acc No. : "+this.getAccountNumber());
     }
     public void accountInformation() {
         System.out.println("---- Account Information ----");
