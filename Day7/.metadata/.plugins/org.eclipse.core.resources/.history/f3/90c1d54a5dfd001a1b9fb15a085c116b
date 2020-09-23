@@ -1,0 +1,32 @@
+package com.hsbc.collections;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+public class MainPage {
+
+	public static void main(String[] args) {
+		Item item1 = new Item(101,"Kitkat",20.00);
+		Item item2 = new Item(102,"5-Star",5.00);
+		Item item3 = new Item(103,"Dairymilk",10.00);
+		Item item4 = new Item(104,"Munch",15.00);
+		Item item5 = new Item(105,"Milky Bar",5.00);
+		
+		Set<Item> set1 = new HashSet<Item>();
+		
+		set1.add(item1);
+		set1.add(item2);
+		set1.add(item3);
+		set1.add(item4);
+		set1.add(item5);
+		
+		Iterator<Item> iterator = set1.iterator(); 
+		
+		while(iterator.hasNext()) {
+			System.out.println("********** Details **********");
+			System.out.println("ID: "+((Item) iterator).getItemID()+"Name: "+((Item) iterator).getName()+"Price: "+((Item) iterator).getPrice()+" INR");
+		}
+	}
+
+}
