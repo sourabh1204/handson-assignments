@@ -1,0 +1,40 @@
+package com.hsbc.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class NameServlet
+ */
+@WebServlet("/studentDetails")
+public class NameServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		PrintWriter pw = response.getWriter();
+		String fName = request.getParameter("Fname");
+		String lName = request.getParameter("Lname");
+		
+		pw.write("<html><body><p>");
+		pw.write("First Name: "+fName);
+		pw.write("<br />Last Name: "+lName);
+		pw.write("</p></body></html>");
+		
+		RequestDispatcher rd = request.getRequestDispatcher("contactDetails.html");
+		rd.include(request, response);
+		
+	}
+
+}
