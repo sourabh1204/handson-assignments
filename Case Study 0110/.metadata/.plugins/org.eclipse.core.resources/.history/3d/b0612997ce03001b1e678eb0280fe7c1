@@ -1,0 +1,18 @@
+package com.hsbc.model.exception;
+
+public class ContactNotFoundExcepton extends Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public ContactNotFoundExcepton() {
+		super("Sorry, contact not found");
+	}
+
+	public ContactNotFoundExcepton(String message) {
+		super(message);
+	}
+	
+}

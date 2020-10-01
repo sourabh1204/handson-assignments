@@ -1,0 +1,7 @@
+package com.hsbc.model.service;
+
+import com.hsbc.model.beans.Profile;
+
+public interface ServiceLayer {
+	public Profile storeProfile(Profile profile);
+}

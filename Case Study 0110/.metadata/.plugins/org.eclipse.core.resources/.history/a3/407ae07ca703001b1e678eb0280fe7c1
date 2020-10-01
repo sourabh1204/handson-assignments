@@ -1,0 +1,20 @@
+package com.hsbc.model.dao;
+
+import java.util.ArrayList;
+
+import com.hsbc.model.beans.Contact;
+import com.hsbc.model.beans.Profile;
+import com.hsbc.model.exception.AuthenticationException;
+import com.hsbc.model.exception.ContactNotFoundExcepton;
+import com.hsbc.model.exception.ProfileNotFoundException;
+
+public interface AppDao {
+	public Profile authenticate(int profileId, String password) throws AuthenticationException;
+	public Profile storeProfile(Profile profile);
+	public Profile updateProfile(int profileId, Profile profile) throws ProfileNotFoundException;
+	public String deleteProfile();
+	public Contact addContact(Contact contact);
+	public Contact updateContact(int contactId, Contact contact) throws ContactNotFoundExcepton;
+	public ArrayList<Contact> fetchAll(int profileId);
+	public String deleteContact(int contactId) throws ContactNotFoundExcepton;
+}

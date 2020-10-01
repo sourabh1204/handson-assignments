@@ -1,0 +1,5 @@
+package com.hsbc.model.exception;
+
+public class ContactNotFoundExcepton {
+
+}

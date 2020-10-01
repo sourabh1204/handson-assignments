@@ -1,0 +1,19 @@
+package com.hsbc.model.business;
+
+import java.util.ArrayList;
+
+import com.hsbc.model.beans.Contact;
+import com.hsbc.model.beans.Profile;
+
+public interface ServiceLayer {
+	public Profile storeProfile(Profile profile);
+	public Profile updatePhone(int profileId, long phone);
+	public Profile updatePassword(int profileId, String password);
+	public String deleteProfile();
+	public Contact addContact(Contact contact);
+	public Contact updateContactName(int contactId, String contactName);
+	public Contact updateContactPhone(int contactId, long phone);
+	public ArrayList<Contact> fetchAll(int profileId);
+	public String deleteContact(int contactId);
+	
+}

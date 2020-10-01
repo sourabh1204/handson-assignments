@@ -1,0 +1,89 @@
+package com.hsbc.model.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+import com.hsbc.model.beans.Contact;
+import com.hsbc.model.beans.Profile;
+import com.hsbc.model.exception.AuthenticationException;
+import com.hsbc.model.exception.ContactNotFoundExcepton;
+import com.hsbc.model.exception.ProfileNotFoundException;
+import com.hsbc.model.utility.DBUtility;
+
+public class JdbcBackedDao implements AppDao {
+	
+	@Override
+	public Profile authenticate(int profileId, String password) throws AuthenticationException {
+		Profile profile = null;
+		try {
+			Connection connection = DBUtility.getConnection();
+			String loginQuery = "select * from profile_table where profile_id = ? and password = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(loginQuery);
+			preparedStatement.setInt(1, profileId);
+			preparedStatement.setString(2, password);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				profile = new Profile();
+				profile.setProfileId(resultSet.getInt("profile_id"));
+				user.setName(resultSet.getString("name"));
+				user.setPassword(resultSet.getString("password"));
+				user.setPhone(resultSet.getLong("phone"));
+				return user;
+			}
+			resultSet.close();
+			preparedStatement.close();
+			connection.close();
+			if(user == null) {
+				throw new AuthenticationException("Sorry Username or Password is Incorrect");
+			} 
+		} catch(SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Profile storeProfile(Profile profile) {
+		
+		return null;
+	}
+
+	@Override
+	public Profile updateProfile(int profileId, Profile profile) throws ProfileNotFoundException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String deleteProfile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Contact addContact(Contact contact) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Contact updateContact(int contactId, Contact contact) throws ContactNotFoundExcepton {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Contact> fetchAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String deleteContact(int contactId) throws ContactNotFoundExcepton {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

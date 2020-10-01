@@ -1,0 +1,212 @@
+package com.hsbc.model.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import com.hsbc.model.beans.Contact;
+import com.hsbc.model.beans.Profile;
+import com.hsbc.model.exception.AuthenticationException;
+import com.hsbc.model.exception.ContactNotFoundExcepton;
+import com.hsbc.model.exception.ProfileNotFoundException;
+import com.hsbc.model.utility.DBUtility;
+
+public class JdbcBackedDao implements AppDao {
+	
+	@Override
+	public Profile authenticate(int profileId, String password) throws AuthenticationException {
+		Profile profile = null;
+		try {
+			Connection connection = DBUtility.getConnection();
+			String loginQuery = "select * from profile_table where profile_id = ? and password = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(loginQuery);
+			preparedStatement.setInt(1, profileId);
+			preparedStatement.setString(2, password);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				profile = new Profile();
+				profile.setProfileId(resultSet.getInt("profile_id"));
+				profile.setName(resultSet.getString("name"));
+				profile.setPassword(resultSet.getString("password"));
+				profile.setPhone(resultSet.getLong("phone"));
+				return profile;
+			}
+			resultSet.close();
+			preparedStatement.close();
+			connection.close();
+			if(profile == null) {
+				throw new AuthenticationException("Sorry Username or Password is Incorrect");
+			} 
+		} catch(SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return profile;
+	}
+
+	@Override
+	public Profile storeProfile(Profile profile) {
+		try {
+			Connection connection = DBUtility.getConnection();
+			PreparedStatement sequenceStatement = connection.prepareStatement("values(next value for profile_seq)");
+			ResultSet rs = sequenceStatement.executeQuery();
+			int seq = 0;
+			if(rs.next()) {
+				seq = rs.getInt(1);
+			} 
+			if(seq == 0) {
+				System.out.println("Error in sequence number");
+			} 
+			PreparedStatement preparedStatement = connection.prepareStatement("insert into profile_table values(?,?,?,?,?)");
+			preparedStatement.setInt(1, seq);
+			preparedStatement.setString(2, profile.getName());
+			preparedStatement.setString(3, profile.getPassword());
+			preparedStatement.setLong(4, profile.getPhone());
+			preparedStatement.setString(5, profile.getDob());
+			preparedStatement.executeUpdate();
+			System.out.println("Profile created with an id = "+seq);
+			preparedStatement.close();
+			connection.close();
+		} catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return profile;
+	}
+
+	@Override
+	public Profile updateProfile(int profileId, Profile profile) throws ProfileNotFoundException {
+		
+		try {
+			Connection connection = DBUtility.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("update profile_table set phone = ? and password = ? where profile_id = ?");
+			preparedStatement.setLong(1, profile.getPhone());
+			preparedStatement.setString(2, profile.getPassword());
+			@SuppressWarnings("unused")
+			int rs = preparedStatement.executeUpdate();
+			return profile;
+		}catch(SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return profile;
+	}
+
+	@Override
+	public String deleteProfile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Contact addContact(int profilId, Contact contact) {
+		try {
+			Connection connection = DBUtility.getConnection();
+			PreparedStatement sequenceStatement = connection.prepareStatement("values(next value for profile_seq)");
+			ResultSet rs = sequenceStatement.executeQuery();
+			int seq = 0;
+			if(rs.next()) {
+				seq = rs.getInt(1);
+			} 
+			if(seq == 0) {
+				System.out.println("Error in sequence number");
+			} 
+			PreparedStatement preparedStatement = connection.prepareStatement("insert into contact_table values(?,?,?,?)");
+			preparedStatement.setInt(1, seq);
+			preparedStatement.setString(2, contact.getContactName());
+			preparedStatement.setString(3, contact.getContactNo());
+			
+			preparedStatement.executeUpdate();
+			System.out.println("Profile created with an id = "+seq);
+			preparedStatement.close();
+			connection.close();
+		} catch(ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return profile;
+	}
+
+	@Override
+	public Contact updateContact(int contactId, Contact contact) throws ContactNotFoundExcepton {
+		try {
+			Connection connection = DBUtility.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("update contact_table set name = ? and phone = ? where contact_id = ?");
+			preparedStatement.setString(1, contact.getContactName());
+			preparedStatement.setLong(1, contact.getContactNo());
+			@SuppressWarnings("unused")
+			int rs = preparedStatement.executeUpdate();
+			return contact;
+		}catch(SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return contact;
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public ArrayList<Contact> fetchAll(int profileId) throws ContactNotFoundExcepton {
+		ArrayList<Contact> list = new ArrayList<Contact>();
+		try {
+			Connection connection = DBUtility.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("select * from contact_table where profile_ref = ?");
+			preparedStatement.setInt(1, profileId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				Contact contact = new Contact();
+				contact.setContactId(resultSet.getInt("contact_id"));
+				contact.setContactName(resultSet.getString("name"));
+				contact.setContactNo(resultSet.getLong("phone"));
+				list.add(contact);
+			}
+			resultSet.close();
+			preparedStatement.close();
+			connection.close();
+			if(list == null) {
+				throw new ContactNotFoundExcepton(); 
+			} else {
+				return list;
+			}
+		}catch(SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	@Override
+	public String deleteContact(int contactId) throws ContactNotFoundExcepton {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Profile getProfile(int profileId) throws ProfileNotFoundException {
+		Profile profile = null;
+		try {
+			Connection connection = DBUtility.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement("select * from profile_table where profile_id = ?");
+			preparedStatement.setInt(1, profileId);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				profile = new Profile();
+				profile.setProfileId(resultSet.getInt("profile_id"));
+				profile.setName(resultSet.getString("name"));
+				profile.setPassword(resultSet.getString("password"));
+				profile.setPhone(resultSet.getLong("phone"));
+			}
+			resultSet.close();
+			preparedStatement.close();
+			connection.close();
+			if(profile == null) {
+				throw new ProfileNotFoundException(); 
+			} else {
+				return profile;
+			}
+		}catch(SQLException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return profile;
+	}
+
+}

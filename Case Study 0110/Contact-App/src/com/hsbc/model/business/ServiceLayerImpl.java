@@ -1,0 +1,89 @@
+package com.hsbc.model.business;
+
+import java.util.ArrayList;
+
+import com.hsbc.model.beans.Contact;
+import com.hsbc.model.beans.Profile;
+import com.hsbc.model.dao.AppDao;
+import com.hsbc.model.exception.AuthenticationException;
+import com.hsbc.model.exception.ContactNotFoundException;
+import com.hsbc.model.exception.ProfileNotFoundException;
+import com.hsbc.model.utility.FactoryPattern;
+import com.hsbc.model.utility.LayerType;
+
+public class ServiceLayerImpl implements ServiceLayer {
+	
+	private AppDao dao = null;
+	public ServiceLayerImpl() {
+		dao = (AppDao) FactoryPattern.getInstance(LayerType.DAO);
+	}
+	
+	public Profile login(int profileId, String password) throws AuthenticationException {
+		Profile profile = dao.authenticate(profileId, password);
+		if(profile == null) {
+			throw new AuthenticationException();
+		}
+		return profile;
+	}
+	
+	@Override
+	public Profile storeProfile(Profile profile) {
+		Profile profile1 = dao.storeProfile(profile);
+		return profile1;
+	}
+
+	@Override
+	public Profile updatePhone(int profileId, long phone) throws ProfileNotFoundException {
+		Profile profile = dao.getProfile(profileId);
+		profile.setPhone(phone);
+		profile = dao.updateProfile(profileId, profile);
+		return profile;
+	}
+
+	@Override
+	public Profile updatePassword(int profileId, String password) throws ProfileNotFoundException {
+		Profile profile = dao.getProfile(profileId);
+		profile.setPassword(password);
+		profile = dao.updateProfile(profileId, profile);
+		return profile;
+	}
+
+	@Override
+	public String deleteProfile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Contact addContact(int profileId, Contact contact) {
+		return dao.addContact(profileId, contact);
+	}
+
+	@Override
+	public Contact updateContactName(int contactId, String contactName) throws ContactNotFoundException {
+		Contact contact= dao.getContact(contactId);
+		contact.setContactName(contactName);
+		contact = dao.updateContact(contactId, contact);
+		return contact;
+	}
+
+	@Override
+	public Contact updateContactPhone(int contactId, long phone) throws ContactNotFoundException {
+		Contact contact= dao.getContact(contactId);
+		contact.setContactNo(phone);
+		contact = dao.updateContact(contactId, contact);
+		return contact;
+	}
+
+	@Override
+	public String deleteContact(int contactId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Contact> getAll(int profileId) throws ContactNotFoundException {
+		return dao.fetchAll(profileId);
+	}
+
+}
